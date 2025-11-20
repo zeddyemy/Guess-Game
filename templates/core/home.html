@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Number Guessing Game{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Hero Section -->
+    <div class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">Welcome to the Number Guessing Game!</h1>
+        <p class="text-xl text-gray-600 mb-8">Test your intuition and logic skills. Can you guess the number?</p>
+        {% if not user.is_authenticated %}
+            <div class="space-x-4">
+                <a href="{% url 'users:register' %}" class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition inline-block font-semibold">Get Started</a>
+                <a href="{% url 'users:login' %}" class="bg-gray-200 text-gray-800 px-8 py-3 rounded-lg hover:bg-gray-300 transition inline-block font-semibold">Login</a>
+            </div>
+        {% else %}
+            <a href="{% url 'games:game_new' %}" class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition inline-block font-semibold">Start New Game</a>
+        {% endif %}
+    </div>
+
+    <!-- How to Play -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">How to Play</h2>
+        <ol class="list-decimal list-inside space-y-2 text-gray-700">
+            <li>Select a difficulty level (Easy: 1-99, Moderate: 1-999, Expert: 1-9999)</li>
+            <li>A random number will be generated within the selected range</li>
+            <li>Make your guess and receive feedback (Too High, Too Low, or Correct!)</li>
+            <li>You have 10 attempts to guess the correct number</li>
+            <li>Score points based on how quickly you guess and the difficulty level</li>
+            <li>Compete with others on the leaderboard!</li>
+        </ol>
+    </div>
+
+    <!-- Features -->
+    <div class="grid md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-white rounded-lg shadow-md p-6 text-center">
+            <div class="text-4xl mb-4">🎯</div>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Multiple Difficulties</h3>
+            <p class="text-gray-600">Choose from Easy, Moderate, or Expert levels</p>
+        </div>
+        <div class="bg-white rounded-lg shadow-md p-6 text-center">
+            <div class="text-4xl mb-4">🏆</div>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Leaderboard</h3>
+            <p class="text-gray-600">Compete with players worldwide</p>
+        </div>
+        <div class="bg-white rounded-lg shadow-md p-6 text-center">
+            <div class="text-4xl mb-4">📊</div>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Track Progress</h3>
+            <p class="text-gray-600">Monitor your stats and improve your skills</p>
+        </div>
+    </div>
+
+    <!-- Scoring System -->
+    <div class="bg-blue-50 rounded-lg shadow-md p-6">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">Scoring System</h2>
+        <p class="text-gray-700 mb-4">Your score is calculated based on:</p>
+        <ul class="list-disc list-inside space-y-2 text-gray-700">
+            <li><strong>Attempts Used:</strong> Fewer attempts = Higher base score</li>
+            <li><strong>Difficulty Level:</strong> Easy (1x), Moderate (2x), Expert (3x multiplier)</li>
+            <li><strong>Formula:</strong> (Max Attempts - Attempts Used + 1) × 100 × Difficulty Multiplier</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
+
+

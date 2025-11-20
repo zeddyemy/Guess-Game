@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile - Number Guessing Game{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-gray-800">Your Profile</h1>
+        <a href="{% url 'users:profile_edit' %}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+            Edit Profile
+        </a>
+    </div>
+
+    <!-- User Info -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">User Information</h2>
+        <div class="grid md:grid-cols-2 gap-4 text-gray-700">
+            <div>
+                <strong>Username:</strong> {{ user.username }}
+            </div>
+            <div>
+                <strong>Email:</strong> {{ user.email }}
+            </div>
+            <div>
+                <strong>Member Since:</strong> {{ user.date_joined|date:"F d, Y" }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">Statistics</h2>
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="text-center p-4 bg-blue-50 rounded-lg">
+                <div class="text-3xl font-bold text-blue-600">{{ profile.total_games_played }}</div>
+                <div class="text-gray-600">Games Played</div>
+            </div>
+            <div class="text-center p-4 bg-green-50 rounded-lg">
+                <div class="text-3xl font-bold text-green-600">{{ profile.total_wins }}</div>
+                <div class="text-gray-600">Wins</div>
+            </div>
+            <div class="text-center p-4 bg-yellow-50 rounded-lg">
+                <div class="text-3xl font-bold text-yellow-600">{{ profile.win_rate }}%</div>
+                <div class="text-gray-600">Win Rate</div>
+            </div>
+            <div class="text-center p-4 bg-purple-50 rounded-lg">
+                <div class="text-3xl font-bold text-purple-600">{{ avg_attempts_per_win }}</div>
+                <div class="text-gray-600">Avg Attempts/Win</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Best Scores -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">Best Scores</h2>
+        <div class="grid md:grid-cols-4 gap-4">
+            <div class="text-center p-4 bg-gray-50 rounded-lg">
+                <div class="text-2xl font-bold text-gray-800">{{ profile.best_score|default:"N/A" }}</div>
+                <div class="text-gray-600">Overall</div>
+            </div>
+            <div class="text-center p-4 bg-green-50 rounded-lg">
+                <div class="text-2xl font-bold text-green-600">{{ profile.best_score_easy|default:"N/A" }}</div>
+                <div class="text-gray-600">Easy</div>
+            </div>
+            <div class="text-center p-4 bg-yellow-50 rounded-lg">
+                <div class="text-2xl font-bold text-yellow-600">{{ profile.best_score_moderate|default:"N/A" }}</div>
+                <div class="text-gray-600">Moderate</div>
+            </div>
+            <div class="text-center p-4 bg-red-50 rounded-lg">
+                <div class="text-2xl font-bold text-red-600">{{ profile.best_score_expert|default:"N/A" }}</div>
+                <div class="text-gray-600">Expert</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Games -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">Recent Games</h2>
+        {% if recent_games %}
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-2">Difficulty</th>
+                            <th class="px-4 py-2">Result</th>
+                            <th class="px-4 py-2">Attempts</th>
+                            <th class="px-4 py-2">Score</th>
+                            <th class="px-4 py-2">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for game in recent_games %}
+                        <tr class="border-t">
+                            <td class="px-4 py-2">{{ game.get_difficulty_level_display }}</td>
+                            <td class="px-4 py-2">
+                                {% if game.is_won %}
+                                    <span class="text-green-600 font-semibold">Won</span>
+                                {% else %}
+                                    <span class="text-red-600 font-semibold">Lost</span>
+                                {% endif %}
+                            </td>
+                            <td class="px-4 py-2">{{ game.attempts_made }}/{{ game.max_attempts }}</td>
+                            <td class="px-4 py-2">{{ game.score|default:"N/A" }}</td>
+                            <td class="px-4 py-2">{{ game.started_at|date:"M d, Y" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-gray-600">No games played yet. <a href="{% url 'games:game_new' %}" class="text-blue-600 hover:underline">Start your first game!</a></p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+

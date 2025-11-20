@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}Play Game - Number Guessing Game{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <!-- Game Info -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div class="flex justify-between items-center mb-4">
+            <h1 class="text-2xl font-bold text-gray-800">Game #{{ game.id }}</h1>
+            <span class="px-4 py-2 bg-blue-100 text-blue-800 rounded-lg font-semibold">
+                {{ game.get_difficulty_level_display }}
+            </span>
+        </div>
+        <div class="grid md:grid-cols-3 gap-4 text-center">
+            <div class="p-4 bg-gray-50 rounded-lg">
+                <div class="text-2xl font-bold text-gray-800">{{ game.attempts_made }}</div>
+                <div class="text-gray-600">Attempts Made</div>
+            </div>
+            <div class="p-4 bg-blue-50 rounded-lg">
+                <div class="text-2xl font-bold text-blue-600">{{ remaining_attempts }}</div>
+                <div class="text-gray-600">Remaining</div>
+            </div>
+            <div class="p-4 bg-green-50 rounded-lg">
+                <div class="text-2xl font-bold text-green-600">{{ game.max_attempts }}</div>
+                <div class="text-gray-600">Max Attempts</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Guess Form -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">Make Your Guess</h2>
+        <p class="text-gray-600 mb-4">Range: {{ min_val }} - {{ max_val }}</p>
+        
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+                <div class="bg-red-100 text-red-800 p-3 rounded">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+            
+            <div>
+                {{ form.guess }}
+                {% if form.guess.errors %}
+                    <p class="text-red-600 text-sm mt-1">{{ form.guess.errors }}</p>
+                {% endif %}
+            </div>
+            
+            <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold text-lg">
+                Submit Guess
+            </button>
+        </form>
+    </div>
+
+    <!-- Guess History -->
+    {% if guesses %}
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">Guess History</h2>
+            <div class="space-y-2">
+                {% for guess in guesses %}
+                    <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                        <div class="flex items-center space-x-4">
+                            <span class="font-semibold text-gray-800">Attempt {{ guess.attempt_number }}:</span>
+                            <span class="text-xl font-bold text-blue-600">{{ guess.guess_number }}</span>
+                        </div>
+                        <span class="px-3 py-1 rounded text-sm font-semibold
+                            {% if guess.feedback == 'correct' %}bg-green-100 text-green-800
+                            {% elif guess.feedback == 'too_high' %}bg-red-100 text-red-800
+                            {% else %}bg-yellow-100 text-yellow-800{% endif %}">
+                            {% if guess.feedback == 'correct' %}Correct!
+                            {% elif guess.feedback == 'too_high' %}Too High
+                            {% else %}Too Low{% endif %}
+                        </span>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
